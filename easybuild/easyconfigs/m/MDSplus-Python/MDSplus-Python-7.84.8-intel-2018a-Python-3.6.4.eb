@@ -1,0 +1,48 @@
+easyblock = 'ConfigureMakePythonPackage'
+
+name = 'MDSplus-Python'
+version = '7.84.8'
+pyver = '3.6.4'
+
+versionsuffix = '-Python-%(pyver)s'
+
+homepage = 'http://mdsplus.org/'
+description = """MDSplus is a set of software tools for data acquisition and storage and a methodology
+ for management of complex scientific data."""
+
+toolchain = {'name': 'intel', 'version': '2018a'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/MDSplus/mdsplus/archive']
+sources = ['stable_release-%s.zip' % version.replace('.', '-')]
+checksums = ['707f2376233b4d3b1e33b3edce1b60ffa297c83f6a39ef39f59daa3fa6b6cb5a']
+
+dependencies = [
+    ('Python', pyver),
+    ('MDSplus', version),
+]
+
+options = {'modulename': 'MDSplus'}
+local_moddir = 'lib/python%(pyshortver)s/site-packages/' + options['modulename']
+
+start_dir = 'python/MDSplus'
+
+skipsteps = ['configure', 'build', 'test']
+install_target = '' # disable "python setup.py install" target
+
+# install by simply copying into a subdir because
+# running setup.py will try to make an egg link instead of installing.
+install_cmd = 'mkdir -p %(installdir)s/' + local_moddir
+install_cmd += ' && pwd && cp -a . %(installdir)s/' + local_moddir + '/'
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': [local_moddir],
+}
+
+# MDSplus.__version__ shows an ugly non-fatal warning,
+# the logic in the mdsplus package seems broken and may need patching.
+sanity_check_commands = [
+    ('python', "-c 'import MDSplus ; print(MDSplus.__version__)'"),
+]
+moduleclass = 'data'
