@@ -1,0 +1,45 @@
+easyblock = 'ConfigureMake'
+
+name = 'MDSplus'
+version = '7.84.8'
+
+homepage = 'http://mdsplus.org/'
+description = """MDSplus is a set of software tools for data acquisition and storage and a methodology
+ for management of complex scientific data."""
+
+toolchain = {'name': 'GCCcore', 'version': '6.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/%(name)s/%(namelower)s/archive']
+sources = ['stable_release-%s.zip' % version.replace('.', '-')]
+checksums = ['707f2376233b4d3b1e33b3edce1b60ffa297c83f6a39ef39f59daa3fa6b6cb5a']
+
+builddependencies = [
+    ('binutils', '2.28')
+]
+
+dependencies = [
+    ('libxml2', '2.9.7'),
+    ('zlib', '1.2.11'),
+    ('ncurses', '6.0'),
+    ('libreadline', '7.0')
+]
+
+configopts = '--disable-doxygen-doc --disable-java --disable-hdf5'
+# hardcode version via configure script (git is unavailable)
+configopts += ' RELEASE_VERSION=%(version)s BRANCH=stable'
+
+preconfigopts = 'export CFLAGS="$CFLAGS -I$EBROOTLIBXML2/include/libxml2 " && '
+
+parallel = 1
+
+modextravars = {
+    'MDSPLUS_DIR': '%(installdir)s',
+    'MDS_PATH': '%(installdir)s/tdi',
+}
+
+modextrapaths = {
+    'IDL_PATH': 'idl',
+}
+
+moduleclass = 'data'
