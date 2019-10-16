@@ -1,8 +1,8 @@
-easyblock = 'ConfigureMakePythonPackage'
+easyblock = 'ConfigureMake'
 
 name = 'MDSplus-Python'
 version = '7.84.8'
-pyver = '3.6.4'
+local_pyver = '3.6.4'
 
 versionsuffix = '-Python-%(pyver)s'
 
@@ -18,22 +18,23 @@ sources = ['stable_release-%s.zip' % version.replace('.', '-')]
 checksums = ['707f2376233b4d3b1e33b3edce1b60ffa297c83f6a39ef39f59daa3fa6b6cb5a']
 
 dependencies = [
-    ('Python', pyver),
+    ('Python', local_pyver),
     ('MDSplus', version),
 ]
 
-options = {'modulename': 'MDSplus'}
-local_moddir = 'lib/python%(pyshortver)s/site-packages/' + options['modulename']
+modextrapaths = {'PYTHONPATH': 'lib/python%(pyshortver)s/site-packages'}
+local_moddir = modextrapaths['PYTHONPATH'] + '/MDSplus'
 
-start_dir = 'python/MDSplus'
+skipsteps = ['build', 'test']
 
-skipsteps = ['configure', 'build', 'test']
-install_target = '' # disable "python setup.py install" target
+configopts = '--disable-doxygen-doc --disable-java'
+# hardcode version via configure script (git is unavailable)
+configopts += ' RELEASE_VERSION=%(version)s BRANCH=stable'
 
 # install by simply copying into a subdir because
 # running setup.py will try to make an egg link instead of installing.
 install_cmd = 'mkdir -p %(installdir)s/' + local_moddir
-install_cmd += ' && pwd && cp -a . %(installdir)s/' + local_moddir + '/'
+install_cmd += ' && pwd && cp -a python/MDSplus/* %(installdir)s/' + local_moddir + '/'
 
 sanity_check_paths = {
     'files': [],
