@@ -1,0 +1,50 @@
+easyblock = 'PythonBundle'
+
+name = 'ToFu'
+version = '1.7.8'
+
+homepage = 'https://github.com/ToFuProject/tofu'
+description = """Tomography for Fusion."""
+
+toolchain = {'name': 'gfbf', 'version': '2023b'}
+
+dependencies = [
+    ('Python', '3.11.5'),
+    ('SciPy-bundle', '2023.11'),
+    ('matplotlib', '3.8.2'),
+    ('astropy', '6.1.0'),
+    ('PyYAML', '6.0.1'),
+]
+
+use_pip = True
+
+exts_list = [
+    ('Polygon3', '3.0.9.1', {
+        'modulename': 'Polygon',
+        'checksums': ['2ddf8d06975f728d5b40786136c82e5b9d38a846bce236b7e6587bbd6a5e9b49'],
+    }),
+    ('svg.path', '6.3', {
+        'checksums': ['e937740a316a7fec86acd217ab6226e112f51328078524126bb7ea9dbe7b1ade'],
+    }),
+    ('datastock', '0.0.38', {
+        'sources': ['%(name)s-%(version)s-py3-none-any.whl'],
+        'checksums': ['697fdb01cb9fcbca33f9567c8b70472eeea9ed0a9cb52313e84618ff7a432636'],
+    }),
+    ('bsplines2d', '0.0.15', {
+        'sources': ['%(name)s-%(version)s-py3-none-any.whl'],
+        'checksums': ['7889568ef87a6deb633785b5d4ea162280693706516fd6c40a965752d67dda5e'],
+    }),
+    ('tofu', version, {
+        'patches': ['ToFu-1.7.8-setup.patch'],
+        'checksums': [
+            {'tofu-1.7.8.tar.gz': '3aa06f0b1adee333c1c424856cc537e507a05b96b4884d3c53afd6d91a3e5b85'},
+            {'ToFu-1.7.8-setup.patch': '20f4ebf0f8391bb83a2d083fc7c9f6bbd229e2a91be9c994367e1c1597a954d9'},
+        ],
+    }),
+]
+
+sanity_pip_check = True
+
+sanity_check_commands = ["python -c 'import tofu.geom'"]
+
+moduleclass = 'tools'
